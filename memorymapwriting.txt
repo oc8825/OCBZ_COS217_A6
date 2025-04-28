@@ -120,5 +120,15 @@ Address   Description
 0x420080  name+40
 
 STACK:
-Offset   Description
-0
+Offset  Description
+0       Stores original value of x19
+8       Stores original value of x20
+16      Stores original value of x21
+24      Stores original value of x30
+32      buf[0]-buf[7]
+40      buf[8]-buf[15]
+48      buf[16]-buf[23]
+56      buf[24]-buf[31]
+64      buf[32]-buf[39]
+72      buf[40]-buf[47]
+80      getName's x30
