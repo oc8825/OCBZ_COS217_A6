@@ -8,10 +8,10 @@ Prolog
 First loop setup
 0x4007cc <readString+8>:     mov     x19, #0x0                       // #0   
 0x4007d0 <readString+12>:    adrp    x21, 0x420000 <__libc_start_main@got.plt>
-0x4007d4 <readString+16>:    mov     w20, w19
-0x4007d8 <readString+20>:    ldr     x0, [x21, #72]
 
 First loop
+0x4007d4 <readString+16>:    mov     w20, w19
+0x4007d8 <readString+20>:    ldr     x0, [x21, #72]
 0x4007dc <readString+24>:    bl      0x400640 <fgetc@plt>
 0x4007e0 <readString+28>:    add     x19, x19, #0x1
 0x4007e4 <readString+32>:    cmp     w0, #0xa
