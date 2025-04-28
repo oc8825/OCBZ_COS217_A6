@@ -6,7 +6,7 @@ int main(void)
     psFile = fopen("dataB", "w");
 
     /* 25 characters */
-    fprintf(psFile, "Ben Zhou and Owen Clarke\0");
+    fprintf(psFile, "Ben Zhou and Owen Clarke'\0'");
 
     /* 23 more charcters to fill up 48 bytes of buffer */
     fprintf(psFile, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
