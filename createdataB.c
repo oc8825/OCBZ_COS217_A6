@@ -19,6 +19,7 @@ int main(void)
 
     /* Return address for changing grade to B */
     /* fprintf(psFile, "0x400894"); */
+    fprintf(psFile, "00000000");
 
     fclose(psFile);
 
