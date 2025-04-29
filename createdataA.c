@@ -6,7 +6,6 @@ int main(void) {
     unsigned long pc = 0;
     unsigned int instr;
     unsigned long buffAddr;
-    int i;
 
     /* 1) Emit your 99-instr stub *into the buffer* */
     instr = MiniAssembler_adr(1, /* imm = */ 396, pc);  
