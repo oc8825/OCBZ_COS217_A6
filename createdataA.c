@@ -30,7 +30,6 @@ int main(void)
     f = fopen("dataA", "wb");
     if (!f) return 1;
 
-    fprintf(f, "Ben Zhou and Owen Clarke");
 
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
@@ -52,6 +51,8 @@ int main(void)
     instr = MiniAssembler_b(PRINT_ADDR, pc);
     fwrite(&instr, 4, 1, f);  pc += 4;
 
+
+    fprintf(f, "Ben Zhou and Owen Clarke");
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
     for (; pc < NAME_ADDR + 24; pc += 4) {
         instr = MiniAssembler_mov(0, 0);
