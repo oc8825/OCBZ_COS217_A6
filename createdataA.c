@@ -20,6 +20,7 @@ int main(void)
     unsigned long   pc;
     unsigned int    instr;
     int             i;
+    const char *name; 
 
     /* These constants come from the grader’s map: */
     const unsigned long NAME_ADDR   = 0x420058UL;  /* start of name[] in BSS */
@@ -29,7 +30,8 @@ int main(void)
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "wb");
     if (!f) return 1;
-
+    const char *name = "Ben Zhou and Owen Clarke";
+    fwrite(name, 1, strlen(name) + 1, f);
 
 
 
