@@ -30,17 +30,17 @@ int main(void)
         pc+=4; 
     }
     instr = MiniAssembler_mov(0,0); 
-    fwrite(&instr, 4, 1, pc); 
-    pc+4; 
+    fwrite(&instr, 4, 1, psFile); 
+    pc+=4; 
 
     for (i = 0; i < 24; i++) { 
         instr = MiniAssembler_strb(0, 2); 
-        fwrite(&instr, 4, 1, pc); 
+        fwrite(&instr, 4, 1, psFile); 
         pc+=4; 
     }
 
     instr = MiniAssembler_b(returnAddr, 392); 
-    fwrite(&instr, 4, 1, pc); 
+    fwrite(&instr, 4, 1, psFile); 
     pc+=4; 
 
     
