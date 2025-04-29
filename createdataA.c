@@ -43,6 +43,7 @@ int main(void)
     fwrite(&instr, 4, 1, psFile); 
     pc+=4; 
 
+    fwrite(&returnAddr, sizeof(unsigned long), 1, psFile);
     
     fclose(psFile);
 
