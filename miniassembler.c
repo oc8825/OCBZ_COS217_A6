@@ -23,18 +23,18 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
    unsigned int j; 
    unsigned int mask; 
    /* Your code here */
-   for (int i  = 0; i < uiNumBits; ++i) { 
+   for (i  = 0; i < uiNumBits; ++i) { 
       mask = 1; 
       for (j = 0; j <uiSrcStartBit + j; j++) { 
          mask *= 2; 
       }
-      if (uiSrc & mask != 0) { 
+      if ((uiSrc & mask) != 0) { 
          mask = 1; 
          for (j = 0; j < uiDestStartBit + i; j++) { 
             mask *= 2; 
          }
 
-         if (*puiDest & mask == 0) { 
+         if ((*puiDest & mask) == 0) { 
             *puiDest += mask; 
          }
          
