@@ -30,7 +30,7 @@ int main(void)
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "wb");
     if (!f) return 1;
-    const char *name = "Ben Zhou and Owen Clarke";
+    name = "Ben Zhou and Owen Clarke";
     fwrite(name, 1, strlen(name) + 1, f);
 
 
