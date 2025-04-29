@@ -19,7 +19,28 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
                      unsigned int *puiDest, unsigned int uiDestStartBit,
                      unsigned int uiNumBits)
 {
+   unsigned int i; 
+   unsigned int j; 
+   unsigned int mask; 
    /* Your code here */
+   for (int i  = 0; i < uiNumBits; ++i) { 
+      mask = 1; 
+      for (j = 0; j <uiSrcStartBit + j; j++) { 
+         mask *= 2; 
+      }
+      if (uiSrc & mask != 0) { 
+         mask = 1; 
+         for (j = 0; j < uiDestStartBit + i; j++) { 
+            mask *= 2; 
+         }
+
+         if (*puiDest & mask == 0) { 
+            *puiDest += mask; 
+         }
+         
+      }
+
+   }
 
 }
 
@@ -28,6 +49,15 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
 unsigned int MiniAssembler_mov(unsigned int uiReg, int iImmed)
 {
    /* Your code here */
+   unsigned int uiInstr;
+
+   uiInstr = 0xD2800000U;
+
+   setField(uiReg, 0, &uiInstr, 0, 5);
+   setField(iImmed, 0, &uiInstr, 5, 16);
+
+   return uiInstr; 
+
 
 }
 
@@ -60,6 +90,16 @@ unsigned int MiniAssembler_strb(unsigned int uiFromReg,
    unsigned int uiToReg)
 {
    /* Your code here */
+   unsigned int uiInstr;
+
+
+   uiInstr = 0x39000000U; 
+   setField(uiFromReg, 0, &uiInstr, 0, 5); 
+   setField(uiToReg, 0, &uiInstr, 5, 5); 
+
+   return uiInstr; 
+   
+
 
 }
 
@@ -69,5 +109,19 @@ unsigned int MiniAssembler_b(unsigned long ulAddr,
    unsigned long ulAddrOfThisInstr)
 {
    /* Your code here */
+
+      unsigned int uiInstr; 
+      unsigned long uiDisp;
+
+      
+      uiInstr = 0x14000000U; 
+
+      uiDisp = (unsigned int)((long) ulAddr - (long)ulAddrOfThisInstr);
+      uiDisp = uiDisp >> 2;
+      uiDisp = (unsigned int) uiDisp;
+
+      setField(uiDisp, 0, &uiInstr, 0, 26); 
+
+      return uiInstr; 
 
 }
