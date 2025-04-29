@@ -34,7 +34,7 @@ int main(void)
     pc+4; 
 
     for (i = 0; i < 24; i++) { 
-        instr = strb(0, 2); 
+        instr = MiniAssembler_strb(0, 2); 
         fwrite(&instr, 4, 1, pc); 
         pc+=4; 
     }
