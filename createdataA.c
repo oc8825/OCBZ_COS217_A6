@@ -55,7 +55,7 @@ int main(void)
     fprintf(f, "Ben Zhou and Owen Clarke");
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (i = 0; i < 24; i++) {
+    for (i = 0; i < 4; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
         pc+=4; 
