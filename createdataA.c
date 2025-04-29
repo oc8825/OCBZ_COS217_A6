@@ -30,10 +30,6 @@ int main(void)
     f = fopen("dataA", "wb");
     if (!f) return 1;
 
-    for (i = 0; i < 24; i++) {
-        instr = MiniAssembler_mov(0, (int)"Ben Zhou and Owen Clarke"[i]);
-        fwrite(&instr, 4, 1, f);
-    }
 
 
 
@@ -58,7 +54,7 @@ int main(void)
 
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (; pc < NAME_ADDR + 24; pc += 4) {
+    for (; pc < NAME_ADDR + 48; pc += 4) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
