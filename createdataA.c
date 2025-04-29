@@ -30,13 +30,7 @@ int main(void)
     f = fopen("dataA", "wb");
     if (!f) return 1;
 
-    for (i = 0; i < 24; i++) { 
-        instr = MiniAssembler_mov(0, (int)"Ben Zhou and Owen Clarke"[i]);
-        fwrite(&instr, 4, 1, f);
-        pc+=4; 
-    }
-
-    
+    fwrite(f, "Ben Zhou and Owen Clarke"); 
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
