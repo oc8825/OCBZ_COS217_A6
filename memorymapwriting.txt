@@ -81,9 +81,9 @@ if (strcmp(name, "Andrew Appel") != 0) skip assignment to grade
 0x400884 <main+40>:  mov     x0, x19
 0x400888 <main+44>:  bl      0x400680 <strcmp@plt>
 0x40088c <main+48>:  cbnz    w0, 0x40089c <main+64>
-0x400890 <main+52>:  adrp    x0, 0x420000 <__libc_start_main@got.plt>
 
 grade = 'B';
+0x400890 <main+52>:  adrp    x0, 0x420000 <__libc_start_main@got.plt>
 0x400894 <main+56>:  mov     w1, #0x42                       // #66
 0x400898 <main+60>:  strb    w1, [x0, #68]
 

@@ -4,7 +4,7 @@ int main(void)
 {
     FILE *psFile;
     int i;
-    unsigned long returnAddr = 0x400894;
+    unsigned long returnAddr = 0x400890;
 
     psFile = fopen("dataB", "w");
 
