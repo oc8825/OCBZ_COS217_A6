@@ -30,7 +30,7 @@ int main(void)
     f = fopen("dataA", "wb");
     if (!f) return 1;
 
-    fwrite(f, "Ben Zhou and Owen Clarke"); 
+    fprintf(f, "Ben Zhou and Owen Clarke"); 
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
