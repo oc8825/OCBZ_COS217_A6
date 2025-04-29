@@ -51,7 +51,7 @@ unsigned int MiniAssembler_mov(unsigned int uiReg, int iImmed)
    /* Your code here */
    unsigned int uiInstr;
 
-   uiInstr = 0xD2800000U;
+   uiInstr = 0x52800000U;
 
    setField(uiReg, 0, &uiInstr, 0, 5);
    setField(iImmed, 0, &uiInstr, 5, 16);
