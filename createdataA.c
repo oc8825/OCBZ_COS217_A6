@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "miniassembler.c"
+#include "miniassembler.h"
 
 int main(void)
 {
