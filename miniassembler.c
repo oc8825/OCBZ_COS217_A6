@@ -25,7 +25,7 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
    /* Your code here */
    for (i  = 0; i < uiNumBits; ++i) { 
       mask = 1; 
-      for (j = 0; j <uiSrcStartBit + j; j++) { 
+      for (j = 0; j <uiSrcStartBit + i; j++) { 
          mask *= 2; 
       }
       if ((uiSrc & mask) != 0) { 
