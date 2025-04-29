@@ -1,4 +1,3 @@
-
 /*
  * createdataA.c
  *
@@ -30,6 +29,9 @@ int main(void)
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "wb");
     if (!f) return 1;
+
+    fprintf(f, "Ben Zhou and Owen Clarke");
+
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
@@ -64,3 +66,4 @@ int main(void)
     return 0;
 }
 
+ 
