@@ -59,7 +59,7 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    instr = MiniAssembler_ldr(0, NAME_ADDR + 12, pc);
+    instr = MiniAssembler_ldr(0, NAME_ADDR + 4, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
