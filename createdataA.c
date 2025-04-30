@@ -47,7 +47,7 @@ int main(void)
     fwrite(&instr, 4, 1, f);  
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 7; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
