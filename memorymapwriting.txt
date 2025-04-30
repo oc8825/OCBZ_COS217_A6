@@ -111,9 +111,14 @@ Address   Content   Description
 0x420044  0x44      grade
 
 BSS:
-Address   Content Description
-0x420058  'B'     name[0]
-0x420059  '
+Address   Description
+0x420058  name
+0x420060  name+8
+0x420068  name+16
+0x420070  name+24
+0x420078  name+32
+0x420080  name+40
+
 STACK:
 Offset  Description
 0       Stores original value of x19
