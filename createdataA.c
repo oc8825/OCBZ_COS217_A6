@@ -55,6 +55,8 @@ int main(void)
     {
         fprintf(f, "%c", '\0');
     }
+    
+
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */

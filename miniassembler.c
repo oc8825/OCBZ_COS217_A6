@@ -125,3 +125,24 @@ unsigned int MiniAssembler_b(unsigned long ulAddr,
       return uiInstr; 
 
 }
+
+unsigned int MiniAssembler_bl(unsigned long ulAddr, unsigned long ulAddrOfThisInstr) { 
+
+   unsigned int uiInstr;
+   unsigned long uiDisp; 
+
+   uiInstr = 0x94000000u; 
+
+   uiDisp = (unsigned int)(long) ulAddr - (long)ulAddrOfThisInstr; 
+   uiDisp = uiDisp >> 2; 
+   uiDisp = (unsigned int) uiDisp; 
+
+   setField(uiDisp, 0, &uiInstr, 0 ,26); 
+
+   return uiInstr; 
+
+
+
+   
+
+}
