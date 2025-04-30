@@ -59,11 +59,11 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    instr = MiniAssembler_adr(0, NAME_ADDR + 12, pc);
+    instr = MiniAssembler_ldr(0, NAME_ADDR + 12, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    /* b) MOV  W0, #'A'             ; W1 ← ASCII 'A'   */
+    /* b) MOV  w1, 'A'             ; W1 ← ASCII 'A'   */
     instr = MiniAssembler_mov(1, (int)'A');
     fwrite(&instr, 4, 1, f);
     pc += 4;
@@ -72,8 +72,8 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    /* b) MOV  W0, #'+'             ; W1 ← ASCII '+'   */
-    instr = MiniAssembler_mov(0, (int)'+');
+    /* b) MOV  W1, #'+'             ; W1 ← ASCII '+'   */
+    instr = MiniAssembler_mov(1, (int)'+');
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
