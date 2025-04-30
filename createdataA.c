@@ -28,23 +28,27 @@ int main(void)
 
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
-    pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
+    pc = NAME_ADDR + 28;  /* at runtime, the stub’s first instr is at NAME_ADDR */
 
     /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
-    instr = MiniAssembler_adr(0, GRADE_ADDR, pc + 28);
+    instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
     fwrite(&instr, 4, 1, f);  
+    pc +=4; 
 
     /* b) MOV  W1, #'A'             ; W1 ← ASCII 'A'   */
     instr = MiniAssembler_mov(1, (int)'A');
     fwrite(&instr, 4, 1, f);  
+    pc+=4;
 
     /* c) STRB W1, [X0]             ; *(&grade) = 'A'  */
     instr = MiniAssembler_strb(1, 0);
     fwrite(&instr, 4, 1, f); 
+    pc+=4; 
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
-    instr = MiniAssembler_b(PRINT_ADDR, pc + 40);
+    instr = MiniAssembler_b(PRINT_ADDR, pc);
     fwrite(&instr, 4, 1, f);  
+    pc+=4; 
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
     for (i = 0; i < 7; i++) {
