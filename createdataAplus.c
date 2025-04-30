@@ -6,9 +6,9 @@
 /*
    Produces a file called dataAplus with the shortened student names
    OB; null bytes for padding; a format string; instructions for
-   overwriting the grade to a null byte, printing A+, and linking
-   back to the prinf; additional null byte padding; and an overwritten
-   return address to our injected instructions.
+   overwriting the grade to a +, printing A, and linking back to the
+   prinf; additional null byte padding; and an overwritten return
+   address to our injected instructions.
 */
 
 #include <stdio.h>
