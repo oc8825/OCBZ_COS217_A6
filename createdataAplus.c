@@ -19,7 +19,7 @@ int main(void)
     const unsigned long NAME_ADDR = 0x420058UL;  /* start of name[] in BSS */
     const unsigned long GRADE_ADDR = 0x420044UL; /* &grade global ('D') */
     const unsigned long PRINT_ADDR = 0x40089cUL;
-    unsigned long returnAddr = 0x420058UL + 28; /* skip-B, print-grade code */
+    unsigned long returnAddr = 0x420058UL + 12; /* skip-B, print-grade code */
 
     const unsigned long PRINTF_ADDR = 0x400690; /* Start of printf */
 
