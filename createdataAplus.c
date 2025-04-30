@@ -32,10 +32,10 @@ int main(void)
         fprintf(f, "%c", '\0');
     }
 
-    fprint(f, "%c", '%'); 
-    fprint(f, "%c", 'c'); 
+    fprintf(f, "%c", '%');
+    fprintf(f, "%c", 'c');
 
-      /* e) Pad stub out to 48 bytes with null bytes" */
+    /* e) Pad stub out to 48 bytes with null bytes" */
     for (i = 0; i < 2; i++)
     {
         fprintf(f, "%c", '\0');
@@ -59,9 +59,9 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    instr = MiniAssembler_adr(0, NAME_ADDR + 12, pc); 
-    fwrite(&instr, 4, 1, f); 
-    pc+=4; 
+    instr = MiniAssembler_adr(0, NAME_ADDR + 12, pc);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
 
     /* b) MOV  W0, #'A'             ; W1 ← ASCII 'A'   */
     instr = MiniAssembler_mov(1, (int)'A');
@@ -85,7 +85,6 @@ int main(void)
     instr = MiniAssembler_b(PRINT_ADDR, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
-
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */
