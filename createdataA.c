@@ -27,7 +27,7 @@ int main(void)
     unsigned int instr;
     int i;
 
-    /* Memory addresses found in the grader’s memory map: */
+    /* Memory addresses found in the grader’s memory map */
     const unsigned long NAME_ADDR = 0x420058UL;
     const unsigned long GRADE_ADDR = 0x420044UL;
     const unsigned long PRINT_ADDR = 0x40089cUL;
