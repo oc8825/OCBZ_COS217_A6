@@ -147,7 +147,6 @@ unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned int ulAddr,
    unsigned int ulAddrOfThisInstr) { 
 
    unsigned int uiInstr;
-   unsigned int uiDisp;
 
    /* Base Instruction Code */
    uiInstr = 0xF8400000u;
