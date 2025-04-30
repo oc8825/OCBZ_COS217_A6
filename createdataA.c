@@ -22,12 +22,10 @@ int main(void)
     fprintf(f, "Ben Zhou and Owen Clarke");
     
     for (i = 0; i < 3; i++) { 
-        fprintf(f, '\0'); 
+        fprintf(f, "%c", '\0'); 
     }
 
 
-
-    
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
