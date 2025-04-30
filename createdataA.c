@@ -31,24 +31,24 @@ int main(void)
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
 
     /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
-    instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
-    fwrite(&instr, 4, 1, f);  pc += 4;
+    instr = MiniAssembler_adr(0, GRADE_ADDR, 28);
+    fwrite(&instr, 4, 1, f);  
 
     /* b) MOV  W1, #'A'             ; W1 ← ASCII 'A'   */
     instr = MiniAssembler_mov(1, (int)'A');
-    fwrite(&instr, 4, 1, f);  pc += 4;
+    fwrite(&instr, 4, 1, f);  
 
     /* c) STRB W1, [X0]             ; *(&grade) = 'A'  */
     instr = MiniAssembler_strb(1, 0);
-    fwrite(&instr, 4, 1, f);  pc += 4;
+    fwrite(&instr, 4, 1, f); 
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
-    instr = MiniAssembler_b(PRINT_ADDR, pc);
-    fwrite(&instr, 4, 1, f);  pc += 4;
+    instr = MiniAssembler_b(PRINT_ADDR, 40);
+    fwrite(&instr, 4, 1, f);  
 
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (; pc < NAME_ADDR; pc += 4) {
+    for (i = 0; i < 8; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
