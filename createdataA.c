@@ -43,7 +43,7 @@ int main(void)
     fwrite(&instr, 4, 1, f); 
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
-    instr = MiniAssembler_b(PRINT_ADDR, 40);
+    instr = MiniAssembler_b(PRINT_ADDR, 31);
     fwrite(&instr, 4, 1, f);  
 
 
