@@ -21,7 +21,7 @@ int main(void)
     f = fopen("dataA", "wb");
     fprintf(f, "%s", "Ben Zhou and Owen Clarke");
     
-    for (i = 0; i < 3; i++) { 
+    for (i = 0; i < 4; i++) { 
         fprintf(f, "%c", '\0'); 
     }
 
@@ -51,7 +51,7 @@ int main(void)
     pc+=4; 
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 4; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
