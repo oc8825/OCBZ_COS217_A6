@@ -45,13 +45,7 @@ int main(void)
     pc+=4; 
 
 
-    instr = MiniAssembler_mov(1, (int)'+');
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
 
-    instr = MiniAssembler_strb(1, 1);
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
     instr = MiniAssembler_b(PRINT_ADDR, pc);
@@ -60,7 +54,7 @@ int main(void)
     
 
     /* e) Pad stub out to 48 bytes with null bytes" */ 
-    for (i = 0; i < 16; i++) {
+    for (i = 0; i < 24; i++) {
         fprintf(f, "%c", '\0'); 
 
     }
