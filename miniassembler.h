@@ -1,6 +1,7 @@
 /*--------------------------------------------------------------------*/
 /* miniassembler.h                                                    */
 /* Author: Bob Dondero, Donna Gabai                                   */
+/* Added function by Ben Zhou and Owen Clarke                         */
 /*--------------------------------------------------------------------*/
 
 #ifndef MINIASSEMBLER_INCLUDED
@@ -28,7 +29,7 @@ unsigned int MiniAssembler_mov(unsigned int uiReg, int iImmed);
                          (must be a multiple of 4).                   */
 
 unsigned int MiniAssembler_adr(unsigned int uiReg, unsigned long ulAddr,
-   unsigned long ulAddrOfThisInstr);
+                               unsigned long ulAddrOfThisInstr);
 
 /*--------------------------------------------------------------------*/
 
@@ -40,7 +41,7 @@ unsigned int MiniAssembler_adr(unsigned int uiReg, unsigned long ulAddr,
       uiToReg: the number of toreg.     0 <= uiToReg <= 31.           */
 
 unsigned int MiniAssembler_strb(unsigned int uiFromReg,
-   unsigned int uiToReg);
+                                unsigned int uiToReg);
 
 /*--------------------------------------------------------------------*/
 
@@ -53,7 +54,8 @@ unsigned int MiniAssembler_strb(unsigned int uiFromReg,
          (must be a multiple of 4).                                   */
 
 unsigned int MiniAssembler_b(unsigned long ulAddr,
-   unsigned long ulAddrOfThisInstr);
+                             unsigned long ulAddrOfThisInstr);
+
 /*--------------------------------------------------------------------*/
 
 /* Return the machine language equivalent of "bl addr".
@@ -63,9 +65,9 @@ unsigned int MiniAssembler_b(unsigned long ulAddr,
          which the branch should occur (must be a multiple of 4).
       ulAddrOfThisInstr: the address of the b instruction itself
          (must be a multiple of 4).                                   */
-unsigned int MiniAssembler_bl(unsigned long ulAddr, unsigned long ulAddrOfThisInstr); 
+unsigned int MiniAssembler_bl(unsigned long ulAddr,
+                              unsigned long ulAddrOfThisInstr);
 
-
-
+/*--------------------------------------------------------------------*/
 
 #endif
