@@ -50,9 +50,7 @@ int main(void)
     pc+=4; 
     
 
-
-
-    /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
+    /* e) Pad stub out to 48 bytes with null bytes" */ 
     for (i = 0; i < 4; i++) {
         fprintf(f, "%c", '\0'); 
 
