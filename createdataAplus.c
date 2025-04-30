@@ -27,7 +27,7 @@ int main(void)
     }
 
  /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
-    pc = NAME_ADDR + 28;  /* at runtime, the stub’s first instr is at NAME_ADDR */
+    pc = NAME_ADDR + 8;  /* at runtime, the stub’s first instr is at NAME_ADDR */
 
     /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
     instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
@@ -43,20 +43,24 @@ int main(void)
     instr = MiniAssembler_strb(1, 0);
     fwrite(&instr, 4, 1, f); 
     pc+=4; 
+
+
     instr = MiniAssembler_mov(1, (int)'+');
-     fwrite(&instr, 4, 1, f);
-     pc += 4;
-     instr = MiniAssembler_strb(1, 1);
-     fwrite(&instr, 4, 1, f);
-     pc += 4;
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    instr = MiniAssembler_strb(1, 1);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
 
     /* b3) store '\0' at offset 2 */
-     instr = MiniAssembler_mov(1, 0);
-     fwrite(&instr, 4, 1, f);
-     pc += 4;
-     instr = MiniAssembler_strb(1, 2);
-     fwrite(&instr, 4, 1, f);
-     pc += 4;
+    instr = MiniAssembler_mov(1, 0);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
+
+    instr = MiniAssembler_strb(1, 2);
+    fwrite(&instr, 4, 1, f);
+    pc += 4;
 
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
     instr = MiniAssembler_b(PRINT_ADDR, pc);
