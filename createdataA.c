@@ -46,7 +46,7 @@ int main(void)
     instr = MiniAssembler_b(PRINT_ADDR, 31);
     fwrite(&instr, 4, 1, f);  
 
-
+    printf("Penis"); 
     /* e) Pad stub out to 48 bytes with harmless MOV W0,#0 (acts like NOP) */
     for (i = 0; i < 8; i++) {
         instr = MiniAssembler_mov(0, 0);
