@@ -157,7 +157,7 @@ unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned int ulAddr,
 
 
    setField(ulAddr, 0, &uiInstr, 5, 5);
-   setField(ulAddrOfThisInstr, 1, &uiInstr, 17, 5);
+   setField(ulAddrOfThisInstr, 1, &uiInstr, 16, 5);
 
    return uiInstr;
 
