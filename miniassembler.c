@@ -140,9 +140,26 @@ unsigned int MiniAssembler_bl(unsigned long ulAddr, unsigned long ulAddrOfThisIn
    setField(uiDisp, 0, &uiInstr, 0 ,26); 
 
    return uiInstr; 
-
-
-
-   
-
 }
+
+
+unsigned int MiniAssembler_ldr(unsigned int uiReg, unsigned int ulAddr,
+   unsigned int ulAddrOfThisInstr) { 
+
+   unsigned int uiInstr;
+   unsigned int uiDisp;
+
+   /* Base Instruction Code */
+   uiInstr = 0xF8400000u;
+
+   /* register to be inserted in instruction */
+   setField(uiReg, 0, &uiInstr, 0, 5);
+
+
+
+   setField(ulAddr, 0, &uiInstr, 5, 5);
+   setField(ulAddrOfThisInstr, 1, &uiInstr, 16, 5);
+
+   return uiInstr;
+
+   }

