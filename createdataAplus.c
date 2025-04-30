@@ -65,7 +65,7 @@ int main(void)
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
-    /* w1 <- 'A' */
+    /* w1 <- '\0' */
     instr = MiniAssembler_mov(1, (int)'\0');
     fwrite(&instr, 4, 1, f);
     pc += 4;
@@ -76,7 +76,7 @@ int main(void)
     pc += 4;
 
     /* x0 <- address of start of format string */
-    instr = MiniAssembler_ldr(0, NAME_ADDR + 4, pc);
+    instr = MiniAssembler_adr(0, NAME_ADDR + 4, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
