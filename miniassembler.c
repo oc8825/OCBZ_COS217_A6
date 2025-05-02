@@ -26,19 +26,24 @@ static void setField(unsigned int uiSrc, unsigned int uiSrcStartBit,
 
    for (i = 0; i < uiNumBits; ++i)
    {
+      /* Uses a mask in order to determine if the bit is 1 */
+
       mask = 1;
       for (j = 0; j < uiSrcStartBit + i; j++)
       {
          mask *= 2;
       }
+      /* If it is not 0, we proceed */
+
       if ((uiSrc & mask) != 0)
       {
          mask = 1;
+      
          for (j = 0; j < uiDestStartBit + i; j++)
          {
             mask *= 2;
          }
-
+         /* Similar idea to earlier */
          if ((*puiDest & mask) == 0)
          {
             *puiDest += mask;
