@@ -3,7 +3,6 @@
 /* Author: Bob Dondero, Donna Gabai                                   */
 /* Added function by Ben Zhou and Owen Clarke                         */
 /*--------------------------------------------------------------------*/
-
 #ifndef MINIASSEMBLER_INCLUDED
 #define MINIASSEMBLER_INCLUDED
 
